@@ -2,7 +2,9 @@
   "permissions": {
     "allow": [
       "Bash(pnpm check *)",
-      "PowerShell(Stop-Process *)"
+      "PowerShell(Stop-Process *)",
+      "WebFetch(domain:api.github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)"
     ]
   }
 }
