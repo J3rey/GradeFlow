@@ -66,15 +66,47 @@ import { toast } from "sonner";
 import ApiKeyDialog from "@/components/ApiKeyDialog";
 import { Link } from "wouter";
 
-const STYLE_PRESETS = [
-  "Transform into a watercolor painting",
-  "Convert to anime style",
-  "Make it look like a vintage photograph",
-  "Apply oil painting effect",
-  "Transform into pixel art",
-  "Convert to pencil sketch",
-  "Make it look cyberpunk",
-  "Apply pop art style",
+const GRADE_PRESETS = [
+  {
+    label: "Professionally colour grade",
+    prompt:
+      "Professionally colour grade this photo with balanced tones, natural colour enhancement, and pleasing contrast. Keep the image realistic and true to life.",
+  },
+  {
+    label: "Cinematic teal & orange",
+    prompt:
+      "Apply a cinematic teal and orange colour grade. Push shadows towards teal and highlights towards warm orange, like a Hollywood blockbuster film.",
+  },
+  {
+    label: "Golden hour warm",
+    prompt:
+      "Apply a golden hour colour grade with warm amber and peach tones, gently lifted shadows, and soft glowing highlights.",
+  },
+  {
+    label: "Moody dark",
+    prompt:
+      "Apply a moody dark colour grade with deep rich shadows, desaturated midtones, and high contrast. Keep detail in the highlights.",
+  },
+  {
+    label: "Faded film",
+    prompt:
+      "Apply a faded film colour grade with lifted blacks, muted tones, reduced saturation, and an analogue feel reminiscent of expired film.",
+  },
+  {
+    label: "Vibrant pop",
+    prompt:
+      "Colour grade this photo to be vibrant and punchy with a significant saturation boost, clean bright highlights, and rich deep colours.",
+  },
+  {
+    label: "Cool editorial",
+    prompt:
+      "Apply a cool editorial colour grade with desaturated tones shifted towards blue, crisp clean shadows, and a high-fashion magazine feel.",
+  },
+  {
+    label: "Soft portrait",
+    prompt:
+      "Apply a soft portrait colour grade with creamy flattering skintones, gentle low contrast, and warm lifted shadows suited to portraiture.",
+  },
 ];
 
 // Error classification
@@ -263,7 +295,7 @@ export default function BatchConvert() {
   } = useGallery();
   const [showPromptHistory, setShowPromptHistory] = useState(false);
   const [photos, setPhotos] = useState<UploadedPhoto[]>([]);
-  const [prompt, setPrompt] = useState("");
+  const [prompt, setPrompt] = useState(GRADE_PRESETS[0].prompt);
   const [isConverting, setIsConverting] = useState(false);
   const [progress, setProgress] = useState(0);
   const [isDragOver, setIsDragOver] = useState(false);
@@ -1280,20 +1312,20 @@ export default function BatchConvert() {
           </Button>
         </div>
 
-        {/* Style Presets */}
+        {/* Grade Presets */}
         <div className="flex flex-wrap gap-2 mb-3">
-          {STYLE_PRESETS.map(preset => (
+          {GRADE_PRESETS.map(({ label, prompt: presetPrompt }) => (
             <button
-              key={preset}
-              onClick={() => setPrompt(preset)}
+              key={label}
+              onClick={() => setPrompt(presetPrompt)}
               disabled={isConverting}
               className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                prompt === preset
+                prompt === presetPrompt
                   ? "bg-blue-500 text-white shadow-md shadow-blue-500/25"
                   : "bg-white/50 text-slate-500 hover:bg-white/70 hover:text-slate-700"
               }`}
             >
-              {preset}
+              {label}
             </button>
           ))}
         </div>
