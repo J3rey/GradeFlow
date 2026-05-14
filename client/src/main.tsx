@@ -45,7 +45,7 @@ const trpcClient = trpc.createClient({
       transformer: superjson,
       headers() {
         return {
-          "x-pixelboard-client-id": getClientId(),
+          "x-gradeflow-client-id": getClientId(),
         };
       },
       fetch(input, init) {

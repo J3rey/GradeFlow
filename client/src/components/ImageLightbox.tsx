@@ -1,5 +1,5 @@
 /* 
- * PixelBoard — Image Lightbox
+ * GradeFlow — Image Lightbox
  * Design: Aero Glass — dark overlay with frosted glass controls
  * iOS-friendly download: converts to blob and triggers via anchor
  */

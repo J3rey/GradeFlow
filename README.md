@@ -1,8 +1,8 @@
-# PixelBoard
+# GradeFlow
 
 A polished web app for photo management and AI-powered image conversion using Google Gemini.
 
-PixelBoard lets you upload photos, generate or edit images with Gemini, and organize the results in a responsive gallery.
+GradeFlow lets you upload photos, generate or edit images with Gemini, and organize the results in a responsive gallery.
 
 ## Features
 

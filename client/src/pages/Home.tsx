@@ -1,5 +1,5 @@
 /* 
- * PixelBoard — Home (App Dashboard)
+ * GradeFlow — Home (App Dashboard)
  * Design: Aero Glass — iOS-inspired glassmorphism
  * - User-centric dashboard
  * - Quick actions: Convert, Gallery, Add Photos
@@ -95,7 +95,7 @@ export default function Home() {
       {/* Greeting */}
       <div className="mb-5">
         <h1 className="text-xl font-bold text-slate-800 mb-0.5">
-          PixelBoard
+          GradeFlow
         </h1>
         <p className="text-slate-600 text-sm">
           Convert and organize your photos with AI.

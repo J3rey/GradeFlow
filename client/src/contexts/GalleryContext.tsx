@@ -1,5 +1,5 @@
 /*
- * PixelBoard — Global Gallery Context
+ * GradeFlow — Global Gallery Context
  * - IndexedDB persistence for gallery images, grid size, and API key
  * - Images stored as data URLs for persistence (blob URLs don't survive reload)
  * - Lazy API key validation (validated on first real conversion, not upfront)
@@ -25,12 +25,12 @@ import { toast } from "sonner";
 import { idbGet, idbSet, idbRemove } from "@/lib/idb";
 
 const STORAGE_KEYS = {
-  images: "pixelboard-images",
-  gridSize: "pixelboard-grid-size",
-  apiKey: "pixelboard-api-key",
-  promptHistory: "pixelboard-prompt-history",
-  stats: "pixelboard-stats",
-  convertedPhotos: "pixelboard-converted-photos",
+  images: "gradeflow-images",
+  gridSize: "gradeflow-grid-size",
+  apiKey: "gradeflow-api-key",
+  promptHistory: "gradeflow-prompt-history",
+  stats: "gradeflow-stats",
+  convertedPhotos: "gradeflow-converted-photos",
 };
 
 const MAX_PROMPT_HISTORY = 50;

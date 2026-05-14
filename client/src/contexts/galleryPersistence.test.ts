@@ -14,12 +14,12 @@ async function freshIdb() {
 }
 
 const KEYS = {
-  images: "pixelboard-images",
-  gridSize: "pixelboard-grid-size",
-  apiKey: "pixelboard-api-key",
-  promptHistory: "pixelboard-prompt-history",
-  convertedPhotos: "pixelboard-converted-photos",
-  stats: "pixelboard-stats",
+  images: "gradeflow-images",
+  gridSize: "gradeflow-grid-size",
+  apiKey: "gradeflow-api-key",
+  promptHistory: "gradeflow-prompt-history",
+  convertedPhotos: "gradeflow-converted-photos",
+  stats: "gradeflow-stats",
 };
 
 describe("Gallery Persistence (IndexedDB)", () => {

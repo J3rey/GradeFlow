@@ -1,5 +1,5 @@
 /* 
- * PixelBoard — Type Definitions
+ * GradeFlow — Type Definitions
  * Design: Aero Glass — iOS-inspired glassmorphism
  */
 

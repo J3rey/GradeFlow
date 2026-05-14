@@ -1,5 +1,5 @@
 /* 
- * PixelBoard — Sortable Gallery Item (App-Centric)
+ * GradeFlow — Sortable Gallery Item (App-Centric)
  * - Clean photo tile, no hover overlays cluttering the display
  * - Long-press activates drag (handled by sensor config)
  * - Tap opens lightbox

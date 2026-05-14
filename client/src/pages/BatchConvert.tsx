@@ -1,5 +1,5 @@
 /* 
- * PixelBoard — Batch Convert Page
+ * GradeFlow — Batch Convert Page
  * Design: Aero Glass — iOS-inspired glassmorphism
  * - Drag & drop upload zone with animated border
  * - Prompt input with style presets
@@ -106,10 +106,10 @@ function classifyError(err: any, statusCode?: number): ApiError {
 
   // HTTP status-based classification
   if (statusCode === 429) {
-    if (err.code === "PIXELBOARD_USAGE_LIMIT") {
+    if (err.code === "GRADEFLOW_USAGE_LIMIT") {
       return {
         type: "usage_limit",
-        message: err.message || "PixelBoard safety cap reached. No Gemini request was sent.",
+        message: err.message || "GradeFlow safety cap reached. No Gemini request was sent.",
         statusCode,
         usage: err.usage,
         limitType: err.limitType,
@@ -347,7 +347,7 @@ export default function BatchConvert() {
     if (usageQuery.data && photos.length > usageQuery.data.globalRemaining) {
       openLimitDialog(
         "Daily project cap reached",
-        `PixelBoard has ${usageQuery.data.globalRemaining} Gemini image conversion${usageQuery.data.globalRemaining === 1 ? "" : "s"} left today. The project cap is ${MAX_IMAGES_PER_DAY}.`,
+        `GradeFlow has ${usageQuery.data.globalRemaining} Gemini image conversion${usageQuery.data.globalRemaining === 1 ? "" : "s"} left today. The project cap is ${MAX_IMAGES_PER_DAY}.`,
         usageQuery.data
       );
       return;
@@ -626,7 +626,7 @@ export default function BatchConvert() {
     if (usageQuery.data && failedPhotos.length > usageQuery.data.globalRemaining) {
       openLimitDialog(
         "Daily project cap reached",
-        `PixelBoard has ${usageQuery.data.globalRemaining} Gemini image conversion${usageQuery.data.globalRemaining === 1 ? "" : "s"} left today.`,
+        `GradeFlow has ${usageQuery.data.globalRemaining} Gemini image conversion${usageQuery.data.globalRemaining === 1 ? "" : "s"} left today.`,
         usageQuery.data
       );
       return;
@@ -1376,7 +1376,7 @@ export default function BatchConvert() {
             </div>
 
             <p className="text-xs text-slate-400 leading-relaxed">
-              PixelBoard blocks the request before it reaches Gemini when these caps are hit. Daily counters follow Gemini's Pacific-time quota day.
+              GradeFlow blocks the request before it reaches Gemini when these caps are hit. Daily counters follow Gemini's Pacific-time quota day.
             </p>
 
             <Button

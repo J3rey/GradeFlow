@@ -1,4 +1,4 @@
-const DB_NAME = "pixelboard-db";
+const DB_NAME = "gradeflow-db";
 const DB_VERSION = 1;
 const STORE = "keyvalue";
 

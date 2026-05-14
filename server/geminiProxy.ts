@@ -84,7 +84,7 @@ export const geminiRouter = router({
           ok: false,
           status: 429,
           data: {
-            code: "PIXELBOARD_USAGE_LIMIT",
+            code: "GRADEFLOW_USAGE_LIMIT",
             limitType: batchLimit.limitType,
             message: batchLimit.message,
             usage: batchLimit.usage,
@@ -132,7 +132,7 @@ export const geminiRouter = router({
             ok: false,
             status: 429,
             data: {
-              code: "PIXELBOARD_USAGE_LIMIT",
+              code: "GRADEFLOW_USAGE_LIMIT",
               limitType: usageLimit.limitType,
               message: usageLimit.message,
               usage: usageLimit.usage,
@@ -257,7 +257,7 @@ export const geminiRouter = router({
   }),
 
   /**
-   * Current PixelBoard-side safety caps for Gemini image calls.
+   * Current GradeFlow-side safety caps for Gemini image calls.
    */
   usageStatus: publicProcedure.query(async ({ ctx }) => {
     const limit = await checkBatchSize(1, ctx);

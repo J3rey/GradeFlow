@@ -24,9 +24,9 @@ interface LimitResult {
 }
 
 const RESET_TIMEZONE = "America/Los_Angeles" as const;
-const DATA_DIR = process.env.PIXELBOARD_DATA_DIR
-  ? path.resolve(process.env.PIXELBOARD_DATA_DIR)
-  : path.resolve(process.cwd(), ".pixelboard");
+const DATA_DIR = process.env.GRADEFLOW_DATA_DIR
+  ? path.resolve(process.env.GRADEFLOW_DATA_DIR)
+  : path.resolve(process.cwd(), ".gradeflow");
 const USAGE_FILE = path.join(DATA_DIR, "gemini-usage.json");
 
 let cachedUsage: UsageFile | null = null;
@@ -82,7 +82,7 @@ function hash(value: string) {
 function getUserLimitKey(ctx: TrpcContext, apiKey?: string) {
   if (ctx.user?.id) return `auth:${ctx.user.id}`;
 
-  const clientId = ctx.req?.header?.("x-pixelboard-client-id");
+  const clientId = ctx.req?.header?.("x-gradeflow-client-id");
   if (clientId && /^[A-Za-z0-9_-]{16,80}$/.test(clientId)) {
     return `client:${hash(clientId)}`;
   }

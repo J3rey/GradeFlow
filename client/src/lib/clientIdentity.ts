@@ -1,6 +1,6 @@
 import { nanoid } from "nanoid";
 
-const STORAGE_KEY = "pixelboard-client-id";
+const STORAGE_KEY = "gradeflow-client-id";
 
 export function getClientId() {
   if (typeof window === "undefined") return "server-render";

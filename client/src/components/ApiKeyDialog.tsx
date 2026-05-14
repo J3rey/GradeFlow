@@ -1,5 +1,5 @@
 /* 
- * PixelBoard — API Key Dialog
+ * GradeFlow — API Key Dialog
  * Design: Aero Glass — frosted glass dialog
  * - View current key (masked)
  * - Change key with validation

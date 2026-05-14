@@ -1,5 +1,5 @@
 /* 
- * PixelBoard — Layout (App-Centric)
+ * GradeFlow — Layout (App-Centric)
  * - Bottom tab bar navigation (mobile-first, like iOS)
  * - Minimal top bar with just the title
  * - Clean, immersive content area
