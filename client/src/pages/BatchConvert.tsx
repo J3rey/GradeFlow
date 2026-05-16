@@ -37,14 +37,9 @@ import {
   Ban,
   RotateCcw,
   Zap,
-  Star,
-  History,
-  ChevronDown,
-  ChevronUp,
   Download,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import {
   Dialog,
@@ -71,7 +66,7 @@ const GRADE_PRESETS = [
   {
     label: "Professionally colour grade",
     prompt:
-      "Create a visibly colour graded version of this photo. Make it look professionally edited in Lightroom: improve white balance, deepen contrast, enrich colours, add clean saturation, slightly lift shadows, protect highlights, and make the final image noticeably more polished. Keep the subject, framing, and realism unchanged. Return the edited image, not the original.",
+      "Create a strongly and visibly professionally colour graded version of this photo, like a finished commercial Lightroom edit. Make the difference obvious side by side: correct white balance, add richer contrast, deepen blacks, lift shadow detail, recover bright highlights, increase colour separation, add clean saturation and vibrance, sharpen perceived clarity, and give the image a premium polished editorial look. Do not make a subtle adjustment. Keep the subject, framing, realism, and image content unchanged. Return the edited image, not the original.",
   },
   {
     label: "Cinematic teal & orange",
@@ -288,13 +283,8 @@ export default function BatchConvert() {
     convertedPhotos,
     setConvertedPhotos,
     transferAllToGallery,
-    promptHistory,
-    addPromptToHistory,
-    togglePromptFavorite,
-    removePromptFromHistory,
     recordConversion,
   } = useGallery();
-  const [showPromptHistory, setShowPromptHistory] = useState(false);
   const [photos, setPhotos] = useState<UploadedPhoto[]>([]);
   const [prompt, setPrompt] = useState(GRADE_PRESETS[0].prompt);
   const [isConverting, setIsConverting] = useState(false);
@@ -430,8 +420,7 @@ export default function BatchConvert() {
    */
   const convertSinglePhoto = async (
     photo: UploadedPhoto,
-    currentPrompt: string,
-    batchSize: number
+    currentPrompt: string
   ) => {
     const base64 = await fileToBase64(photo.file);
 
@@ -440,7 +429,7 @@ export default function BatchConvert() {
       prompt: currentPrompt,
       imageBase64: base64,
       imageMimeType: photo.file.type,
-      batchSize,
+      batchSize: 1,
     });
 
     return result; // { status, data, ok }
@@ -485,9 +474,6 @@ export default function BatchConvert() {
       return;
     }
 
-    // Save prompt to history
-    addPromptToHistory(prompt);
-
     setIsConverting(true);
     setProgress(0);
     setBatchError(null);
@@ -511,6 +497,9 @@ export default function BatchConvert() {
     for (let i = 0; i < photos.length; i++) {
       // Check if batch was aborted
       if (abortRef.current) {
+        failCount += photos.slice(i).filter(photo =>
+          results.some(result => result.id === photo.id)
+        ).length;
         setConvertedPhotos(prev =>
           prev.map(r =>
             r.status === "pending"
@@ -540,7 +529,7 @@ export default function BatchConvert() {
 
       while (retries <= maxRetries && !converted && !abortRef.current) {
         try {
-          const result = await convertSinglePhoto(photo, prompt, photos.length);
+          const result = await convertSinglePhoto(photo, prompt);
 
           if (!result.ok) {
             // Non-OK response from Gemini API (proxied through backend)
@@ -811,6 +800,7 @@ export default function BatchConvert() {
 
     setBatchError(null);
     setIsConverting(true);
+    setProgress(0);
     abortRef.current = false;
 
     // Reset failed items to pending
@@ -826,12 +816,39 @@ export default function BatchConvert() {
     let retryFail = 0;
 
     for (let i = 0; i < failedPhotos.length; i++) {
-      if (abortRef.current) break;
+      if (abortRef.current) {
+        const remainingIds = failedPhotos.slice(i).map(photo => photo.id);
+        retryFail += remainingIds.length;
+        setConvertedPhotos(prev =>
+          prev.map(r =>
+            remainingIds.includes(r.id) && r.status === "pending"
+              ? {
+                  ...r,
+                  status: "error" as const,
+                  error: "Retry stopped due to critical error",
+                }
+              : r
+          )
+        );
+        break;
+      }
 
       const failedPhoto = failedPhotos[i];
       const originalPhoto = photos.find(p => p.id === failedPhoto.id);
       if (!originalPhoto) {
+        setConvertedPhotos(prev =>
+          prev.map(r =>
+            r.id === failedPhoto.id
+              ? {
+                  ...r,
+                  status: "error" as const,
+                  error: "Original upload is no longer available. Re-upload this image to convert it again.",
+                }
+              : r
+          )
+        );
         retryFail++;
+        setProgress(((i + 1) / failedPhotos.length) * 100);
         continue;
       }
 
@@ -844,8 +861,7 @@ export default function BatchConvert() {
       try {
         const result = await convertSinglePhoto(
           originalPhoto,
-          prompt || failedPhoto.prompt,
-          failedPhotos.length
+          failedPhoto.prompt || prompt
         );
 
         if (!result.ok) {
@@ -1279,20 +1295,12 @@ export default function BatchConvert() {
         )}
       </motion.div>
 
-      {/* Prompt & Convert */}
+      {/* Grade Presets & Convert */}
       <div className="glass rounded-2xl p-5 card-shadow mb-4">
-        <h3 className="text-base font-bold text-slate-700 mb-3">
-          Conversion Prompt
-        </h3>
-        <div className="flex gap-3 mb-4">
-          <Input
-            value={prompt}
-            onChange={e => setPrompt(e.target.value)}
-            placeholder="Describe how you want to transform your photos..."
-            aria-label="Conversion prompt"
-            className="h-12 rounded-xl bg-white/50 border-white/40 focus:border-blue-400 text-base"
-            disabled={isConverting}
-          />
+        <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+          <h3 className="text-base font-bold text-slate-700">
+            Choose Colour Grade
+          </h3>
           <Button
             onClick={convertPhotos}
             disabled={
@@ -1317,7 +1325,7 @@ export default function BatchConvert() {
         </div>
 
         {/* Grade Presets */}
-        <div className="flex flex-wrap gap-2 mb-3">
+        <div className="flex flex-wrap gap-2">
           {GRADE_PRESETS.map(({ label, prompt: presetPrompt }) => (
             <button
               key={label}
@@ -1333,107 +1341,6 @@ export default function BatchConvert() {
             </button>
           ))}
         </div>
-
-        {/* Prompt History & Favorites */}
-        {promptHistory.length > 0 && (
-          <div className="border-t border-slate-200/50 pt-3">
-            <button
-              onClick={() => setShowPromptHistory(!showPromptHistory)}
-              className="flex items-center gap-2 text-sm font-semibold text-slate-600 hover:text-slate-800 transition-colors w-full"
-            >
-              <History className="w-4 h-4" />
-              <span>Prompt History</span>
-              <span className="text-xs font-normal text-slate-400 ml-1">
-                ({promptHistory.length})
-              </span>
-              {showPromptHistory ? (
-                <ChevronUp className="w-4 h-4 ml-auto" />
-              ) : (
-                <ChevronDown className="w-4 h-4 ml-auto" />
-              )}
-            </button>
-
-            <AnimatePresence>
-              {showPromptHistory && (
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: "auto" }}
-                  exit={{ opacity: 0, height: 0 }}
-                  className="overflow-hidden"
-                >
-                  <div className="mt-3 space-y-1 max-h-64 overflow-y-auto">
-                    {/* Favorites first, then recent */}
-                    {[...promptHistory]
-                      .sort((a, b) => {
-                        if (a.isFavorite !== b.isFavorite)
-                          return a.isFavorite ? -1 : 1;
-                        return b.usedAt - a.usedAt;
-                      })
-                      .map(item => (
-                        <div
-                          key={item.id}
-                          className={`flex items-center gap-2 px-3 py-2 rounded-xl transition-all group cursor-pointer ${
-                            prompt === item.text
-                              ? "bg-blue-50/80 border border-blue-200/60"
-                              : "hover:bg-white/50"
-                          }`}
-                          onClick={() => {
-                            setPrompt(item.text);
-                          }}
-                        >
-                          {/* Favorite toggle */}
-                          <button
-                            onClick={e => {
-                              e.stopPropagation();
-                              togglePromptFavorite(item.id);
-                            }}
-                            className="shrink-0 p-1.5 -m-1.5 transition-colors rounded"
-                            aria-label={
-                              item.isFavorite
-                                ? "Remove from favorites"
-                                : "Add to favorites"
-                            }
-                          >
-                            <Star
-                              className={`w-3.5 h-3.5 ${
-                                item.isFavorite
-                                  ? "fill-amber-400 text-amber-400"
-                                  : "text-slate-300 group-hover:text-slate-400"
-                              }`}
-                            />
-                          </button>
-
-                          {/* Prompt text */}
-                          <span className="text-sm text-slate-600 truncate flex-1">
-                            {item.text}
-                          </span>
-
-                          {/* Use count badge */}
-                          {item.useCount > 1 && (
-                            <span className="text-xs font-medium text-slate-400 bg-slate-100/60 px-1.5 py-0.5 rounded-full shrink-0">
-                              {item.useCount}x
-                            </span>
-                          )}
-
-                          {/* Delete button */}
-                          <button
-                            onClick={e => {
-                              e.stopPropagation();
-                              removePromptFromHistory(item.id);
-                            }}
-                            className="shrink-0 p-1.5 -m-1.5 text-slate-300 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all rounded"
-                            aria-label="Remove from history"
-                          >
-                            <X className="w-3.5 h-3.5" />
-                          </button>
-                        </div>
-                      ))}
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-        )}
       </div>
 
       {/* Progress */}

@@ -1,7 +1,9 @@
 {
   "day": "2026-05-15",
-  "globalUsed": 2,
+  "globalUsed": 12,
   "users": {
-    "client:32f016bd63bd8cbd6d0ecbb51835cccb": 2
+    "client:32f016bd63bd8cbd6d0ecbb51835cccb": 5,
+    "client:58453c703394dae1ac1fa010fac989ee": 2,
+    "client:06ef0f94c21e9ae67982586089545ac5": 5
   }
 }
